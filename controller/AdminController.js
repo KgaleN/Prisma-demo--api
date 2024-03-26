@@ -1,6 +1,14 @@
+require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        provider: process.env.DB_Provider,
+        url: process.env.DATABASE_URL,
+      }
+    },
+  });
 
 const AddEmployee = async(fullName, email,password, active) =>{
 

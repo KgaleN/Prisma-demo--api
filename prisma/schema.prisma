@@ -1,7 +1,9 @@
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:123Ntando@localhost:3306/stats_app"
+  url      = env("DATABASE_URL")
 }
+
+
 
 model Admin {
   id      Int      @id @default(autoincrement())
