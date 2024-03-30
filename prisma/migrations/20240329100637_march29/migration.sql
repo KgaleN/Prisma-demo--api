@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE `game` ADD COLUMN `awayTeamName` VARCHAR(255) NULL,
+    ADD COLUMN `homeTeamName` VARCHAR(255) NULL;
+
+-- AlterTable
+ALTER TABLE `leagueteamstats` ADD COLUMN `draws` INTEGER NULL DEFAULT 0,
+    ADD COLUMN `losses` INTEGER NULL DEFAULT 0,
+    ADD COLUMN `wins` INTEGER NULL DEFAULT 0;

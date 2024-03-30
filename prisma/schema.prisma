@@ -1,282 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-
-
-model Admin {
-  id      Int      @id @default(autoincrement())
-  fullName     String?   @db.VarChar(255)
-  email        String?   @db.VarChar(255) @unique
-  password     String?   @db.VarChar(255)
-  active       String?   @db.VarChar(3)
+model admin {
+  id       Int     @id @default(autoincrement())
+  fullName String? @db.VarChar(255)
+  email    String? @unique(map: "Admin_email_key") @db.VarChar(255)
+  password String? @db.VarChar(255)
+  active   String? @db.VarChar(3)
 }
 
-model Employee {
-  id        Int       @id @default(autoincrement())
-  fullName     String?   @db.VarChar(255)
-  email        String?   @db.VarChar(255) @unique
-  password     String?   @db.VarChar(255)
-  active       String?   @db.VarChar(3)
-  games   Game[]
+model employee {
+  id       Int     @id @default(autoincrement())
+  fullName String? @db.VarChar(255)
+  email    String? @unique(map: "Employee_email_key") @db.VarChar(255)
+  password String? @db.VarChar(255)
+  active   String? @db.VarChar(3)
+  game     game[]
 }
 
-model Game {
-  id       Int      @id @default(autoincrement())
-  gameDate     DateTime?   
-  gameTime     DateTime?  
-  location     String?   @db.VarChar(255)
-  active       String?   @db.VarChar(3)
-  homeTeamName       String?   @db.VarChar(255)
-  awayTeamName       String?   @db.VarChar(255)
-  // foreign keys
-  emp          Employee?    @relation(fields: [empId], references: [id])
-  empId        Int?     
-  season       Season?    @relation(fields: [seasonId], references: [id])
-  seasonId     String?  
+model game {
+  id              Int               @id @default(autoincrement())
+  gameDate        DateTime?
+  gameTime        DateTime?
+  location        String?           @db.VarChar(255)
+  active          String?           @db.VarChar(3)
+  empId           Int?
+  seasonId        String?
+  awayTeamName    String?           @db.VarChar(255)
+  homeTeamName    String?           @db.VarChar(255)
+  employee        employee?         @relation(fields: [empId], references: [id], map: "Game_empId_fkey")
+  season          season?           @relation(fields: [seasonId], references: [id], map: "Game_seasonId_fkey")
+  gameofficial    gameofficial[]
+  gameplayerstats gameplayerstats[]
+  gameteamstats   gameteamstats[]
 
-// list of game officals officiating game
-  gameOfficials GameOfficial[] 
-
-  gameTeamStats GameTeamStats[]
-
-  gamePlayerStats GamePlayerStats[]  
-
-  
+  @@index([empId], map: "Game_empId_fkey")
+  @@index([seasonId], map: "Game_seasonId_fkey")
 }
 
-model Team {
-  id            Int      @id @default(autoincrement())
-  name          String?  @db.VarChar(255)
-  nickname      String?  @db.VarChar(255)
-  headCoach     String?  @db.VarChar(255)
-  stadiumName   String?  @db.VarChar(255)
-  city          String?  @db.VarChar(255)
-  logoImg       Bytes?
+model gameofficial {
+  id        Int      @id @default(autoincrement())
+  role      String?
+  position  String?
+  officalId Int?
+  gameId    Int?
+  game      game?    @relation(fields: [gameId], references: [id], map: "GameOfficial_gameId_fkey")
+  offical   offical? @relation(fields: [officalId], references: [id], map: "GameOfficial_officalId_fkey")
 
-  // list of players on the team
-  players Player[]
-  seasonTeamStats SeasonTeamStats[]
-  gameTeamStats GameTeamStats[]
-  leagueTeamdStats LeagueTeamStats[]
+  @@index([gameId], map: "GameOfficial_gameId_fkey")
+  @@index([officalId], map: "GameOfficial_officalId_fkey")
 }
 
-model Offical {
-  id            Int       @id @default(autoincrement())
-  fullName      String?   @db.VarChar(255)
-  active        String?   @db.VarChar(3)
-  gameOfficial  GameOfficial[]
+model gameplayerstats {
+  id               Int     @id @default(autoincrement())
+  goalsScored      Int?    @default(0)
+  shotsOnTarget    Int?    @default(0)
+  shotsOffTarget   Int?    @default(0)
+  shotsTaken       Int?    @default(0)
+  passesCompleted  Int?    @default(0)
+  passesIncomplete Int?    @default(0)
+  cornersTaken     Int?    @default(0)
+  freeKicks        Int?    @default(0)
+  redCards         Int?    @default(0)
+  yellowCrads      Int?    @default(0)
+  offSides         Int?    @default(0)
+  fouls            Int?    @default(0)
+  penalties        Int?    @default(0)
+  penaltiesScored  Int?    @default(0)
+  penaltiesMissed  Int?    @default(0)
+  playerId         Int?
+  gameId           Int?
+  game             game?   @relation(fields: [gameId], references: [id], map: "GamePlayerStats_gameId_fkey")
+  player           player? @relation(fields: [playerId], references: [id], map: "GamePlayerStats_playerId_fkey")
+
+  @@index([gameId], map: "GamePlayerStats_gameId_fkey")
+  @@index([playerId], map: "GamePlayerStats_playerId_fkey")
 }
 
-model Season {
+model gameteamstats {
+  id                   Int   @id @default(autoincrement())
+  goalsScored          Int?  @default(0)
+  possessionPercentage Int?  @default(0)
+  shotsOnTarget        Int?  @default(0)
+  shotsOffTarget       Int?  @default(0)
+  shotsTaken           Int?  @default(0)
+  passesCompleted      Int?  @default(0)
+  passesIncomplete     Int?  @default(0)
+  cornersTaken         Int?  @default(0)
+  freeKicks            Int?  @default(0)
+  redCards             Int?  @default(0)
+  yellowCrads          Int?  @default(0)
+  offSides             Int?  @default(0)
+  fouls                Int?  @default(0)
+  penalties            Int?  @default(0)
+  penaltiesScored      Int?  @default(0)
+  penaltiesMissed      Int?  @default(0)
+  teamId               Int?
+  gameId               Int?
+  game                 game? @relation(fields: [gameId], references: [id], map: "GameTeamStats_gameId_fkey")
+  team                 team? @relation(fields: [teamId], references: [id], map: "GameTeamStats_teamId_fkey")
 
-  id           String      @id
-  startingDate DateTime? 
-  endingDate   DateTime?
-
-  //list of games during the season
-  games Game[] 
-  seasonTeamStats SeasonTeamStats[]
-  seasonPlayerStats SeasonPlayerStats[]
+  @@index([gameId], map: "GameTeamStats_gameId_fkey")
+  @@index([teamId], map: "GameTeamStats_teamId_fkey")
 }
 
-model GameOfficial {
-  id         Int  @id @default(autoincrement())
-  role       String? 
-  position   String?
+model leagueplayerstats {
+  id               Int     @id @default(autoincrement())
+  goalsScored      Int?    @default(0)
+  shotsOnTarget    Int?    @default(0)
+  shotsOffTarget   Int?    @default(0)
+  shotsTaken       Int?    @default(0)
+  passesCompleted  Int?    @default(0)
+  passesIncomplete Int?    @default(0)
+  cornersTaken     Int?    @default(0)
+  freeKicks        Int?    @default(0)
+  redCards         Int?    @default(0)
+  yellowCrads      Int?    @default(0)
+  offSides         Int?    @default(0)
+  fouls            Int?    @default(0)
+  penalties        Int?    @default(0)
+  penaltiesScored  Int?    @default(0)
+  penaltiesMissed  Int?    @default(0)
+  playerId         Int?
+  player           player? @relation(fields: [playerId], references: [id], map: "LeaguePlayerStats_playerId_fkey")
 
-  //foreign keys
-  official   Offical?    @relation(fields: [officalId], references: [id])
-  officalId Int?     
-  game       Game?    @relation(fields: [gameId], references: [id])
-  gameId   Int?
+  @@index([playerId], map: "LeaguePlayerStats_playerId_fkey")
 }
 
-model Player {
-  id          Int      @id @default(autoincrement())
-  fullName    String?    @db.VarChar(255)
-  age         Int?
-  height      Int?
-  weight      Int?
-  nationality String? @db.VarChar(255)
-  status      String? @db.VarChar(20)
-  position    String? @db.VarChar(50)
-  
-  //foreign keys
-  team   Team?    @relation(fields: [teamId], references: [id])
-  teamId Int ? 
+model leagueteamstats {
+  id                   Int   @id @default(autoincrement())
+  goalsScored          Int?  @default(0)
+  possessionPercentage Int?  @default(0)
+  shotsOnTarget        Int?  @default(0)
+  shotsOffTarget       Int?  @default(0)
+  shotsTaken           Int?  @default(0)
+  passesCompleted      Int?  @default(0)
+  passesIncomplete     Int?  @default(0)
+  cornersTaken         Int?  @default(0)
+  freeKicks            Int?  @default(0)
+  redCards             Int?  @default(0)
+  yellowCrads          Int?  @default(0)
+  offSides             Int?  @default(0)
+  fouls                Int?  @default(0)
+  penalties            Int?  @default(0)
+  penaltiesScored      Int?  @default(0)
+  penaltiesMissed      Int?  @default(0)
+  teamId               Int?
+  draws                Int?  @default(0)
+  losses               Int?  @default(0)
+  wins                 Int?  @default(0)
+  team                 team? @relation(fields: [teamId], references: [id], map: "LeagueTeamStats_teamId_fkey")
 
-  gamePlayerStats GamePlayerStats[] 
-  seasonPlayerStats SeasonPlayerStats[]
-  leaguePlayerStats LeaguePlayerStats[]   
+  @@index([teamId], map: "LeagueTeamStats_teamId_fkey")
 }
 
-model GameTeamStats {
-  id          Int      @id @default(autoincrement())
-  goalsScored           Int? @default(0)
-  possessionPercentage  Int? @default(0)
-  shotsOnTarget         Int? @default(0)
-  shotsOffTarget        Int? @default(0)
-  shotsTaken            Int? @default(0)
-  passesCompleted       Int? @default(0)
-  passesIncomplete      Int? @default(0)
-  cornersTaken          Int? @default(0)
-  freeKicks             Int? @default(0)
-  redCards              Int? @default(0)
-  yellowCrads           Int? @default(0)
-  offSides              Int? @default(0)
-  fouls                 Int? @default(0)
-  penalties             Int? @default(0)
-  penaltiesScored       Int? @default(0)
-  penaltiesMissed       Int? @default(0)
-  
-  //foreign keys
-  team   Team?    @relation(fields: [teamId], references: [id])
-  teamId Int ?  
-
-  game   Game?    @relation(fields: [gameId], references: [id])
-  gameId Int ?    
+model offical {
+  id           Int            @id @default(autoincrement())
+  fullName     String?        @db.VarChar(255)
+  active       String?        @db.VarChar(3)
+  gameofficial gameofficial[]
 }
 
-model SeasonTeamStats {
-  id          Int      @id @default(autoincrement())
-  goalsScored           Int? @default(0)
-  possessionPercentage  Int? @default(0)
-  shotsOnTarget         Int? @default(0)
-  shotsOffTarget        Int? @default(0)
-  shotsTaken            Int? @default(0)
-  passesCompleted       Int? @default(0) 
-  passesIncomplete      Int? @default(0)
-  cornersTaken          Int? @default(0)
-  freeKicks             Int? @default(0)
-  redCards              Int? @default(0)
-  yellowCrads           Int? @default(0)
-  offSides              Int? @default(0)
-  fouls                 Int? @default(0)
-  penalties             Int? @default(0)
-  penaltiesScored       Int? @default(0)
-  penaltiesMissed       Int? @default(0)
-  wins                  Int? @default(0)
-  losses                Int? @default(0)
-  draws                 Int? @default(0)
-  points                Int? @default(0)
-  
-  //foreign keys
-  team   Team?    @relation(fields: [teamId], references: [id])
-  teamId Int ?  
+model player {
+  id                Int                 @id @default(autoincrement())
+  fullName          String?             @db.VarChar(255)
+  age               Int?
+  height            Int?
+  weight            Int?
+  nationality       String?             @db.VarChar(255)
+  status            String?             @db.VarChar(20)
+  position          String?             @db.VarChar(50)
+  teamId            Int?
+  gameplayerstats   gameplayerstats[]
+  leagueplayerstats leagueplayerstats[]
+  team              team?               @relation(fields: [teamId], references: [id], map: "Player_teamId_fkey")
+  seasonplayerstats seasonplayerstats[]
 
-  season   Season?    @relation(fields: [seasonId], references: [id])
-  seasonId String ?    
+  @@index([teamId], map: "Player_teamId_fkey")
 }
 
-model LeagueTeamStats {
-  id          Int      @id @default(autoincrement())
-  goalsScored           Int? @default(0)
-  possessionPercentage  Int? @default(0)
-  shotsOnTarget         Int? @default(0)
-  shotsOffTarget        Int? @default(0)
-  shotsTaken            Int? @default(0)
-  passesCompleted       Int? @default(0)
-  passesIncomplete      Int? @default(0)
-  cornersTaken          Int? @default(0)
-  freeKicks             Int? @default(0) 
-  redCards              Int? @default(0)
-  yellowCrads           Int? @default(0)
-  offSides              Int? @default(0)
-  fouls                 Int? @default(0)
-  penalties             Int? @default(0)
-  penaltiesScored       Int? @default(0)
-  penaltiesMissed       Int? @default(0)
-  wins                  Int? @default(0)
-  losses                Int? @default(0)
-  draws                 Int? @default(0)
-
-  team   Team?    @relation(fields: [teamId], references: [id])
-  teamId Int ?  
+model season {
+  id                String              @id
+  startingDate      DateTime?
+  endingDate        DateTime?
+  game              game[]
+  seasonplayerstats seasonplayerstats[]
+  seasonteamstats   seasonteamstats[]
 }
 
-model GamePlayerStats {
-  id          Int      @id @default(autoincrement())
-  goalsScored           Int? @default(0)
-  shotsOnTarget         Int? @default(0)
-  shotsOffTarget        Int? @default(0)
-  shotsTaken            Int? @default(0)
-  passesCompleted       Int? @default(0)
-  passesIncomplete      Int? @default(0)
-  cornersTaken          Int? @default(0)
-  freeKicks             Int? @default(0) 
-  redCards              Int? @default(0) 
-  yellowCrads           Int? @default(0)
-  offSides              Int? @default(0)
-  fouls                 Int? @default(0)
-  penalties             Int? @default(0)
-  penaltiesScored       Int? @default(0)
-  penaltiesMissed       Int? @default(0)
-  
-  //foreign keys
-  player   Player?    @relation(fields: [playerId], references: [id])
-  playerId Int ?  
+model seasonplayerstats {
+  id               Int     @id @default(autoincrement())
+  goalsScored      Int?    @default(0)
+  shotsOnTarget    Int?    @default(0)
+  shotsOffTarget   Int?    @default(0)
+  shotsTaken       Int?    @default(0)
+  passesCompleted  Int?    @default(0)
+  passesIncomplete Int?    @default(0)
+  cornersTaken     Int?    @default(0)
+  freeKicks        Int?    @default(0)
+  redCards         Int?    @default(0)
+  yellowCrads      Int?    @default(0)
+  offSides         Int?    @default(0)
+  fouls            Int?    @default(0)
+  penalties        Int?    @default(0)
+  penaltiesScored  Int?    @default(0)
+  penaltiesMissed  Int?    @default(0)
+  seasonId         String?
+  playerId         Int?
+  player           player? @relation(fields: [playerId], references: [id], map: "SeasonPlayerStats_playerId_fkey")
+  season           season? @relation(fields: [seasonId], references: [id], map: "SeasonPlayerStats_seasonId_fkey")
 
-  game   Game?    @relation(fields: [gameId], references: [id])
-  gameId Int ?    
+  @@index([playerId], map: "SeasonPlayerStats_playerId_fkey")
+  @@index([seasonId], map: "SeasonPlayerStats_seasonId_fkey")
 }
 
-model SeasonPlayerStats {
-  id          Int      @id @default(autoincrement())
-  goalsScored           Int? @default(0)
-  shotsOnTarget         Int? @default(0)
-  shotsOffTarget        Int? @default(0)
-  shotsTaken            Int? @default(0)
-  passesCompleted       Int? @default(0)
-  passesIncomplete      Int? @default(0)
-  cornersTaken          Int? @default(0)  
-  freeKicks             Int? @default(0)
-  redCards              Int? @default(0)
-  yellowCrads           Int? @default(0)
-  offSides              Int? @default(0)
-  fouls                 Int? @default(0)
-  penalties             Int? @default(0)
-  penaltiesScored       Int? @default(0)
-  penaltiesMissed       Int? @default(0)
-  
-  //foreign keys
-  season   Season?    @relation(fields: [seasonId], references: [id])
-  seasonId String ?   
+model seasonteamstats {
+  id                   Int     @id @default(autoincrement())
+  goalsScored          Int?    @default(0)
+  possessionPercentage Int?    @default(0)
+  shotsOnTarget        Int?    @default(0)
+  shotsOffTarget       Int?    @default(0)
+  shotsTaken           Int?    @default(0)
+  passesCompleted      Int?    @default(0)
+  passesIncomplete     Int?    @default(0)
+  cornersTaken         Int?    @default(0)
+  freeKicks            Int?    @default(0)
+  redCards             Int?    @default(0)
+  yellowCrads          Int?    @default(0)
+  offSides             Int?    @default(0)
+  fouls                Int?    @default(0)
+  penalties            Int?    @default(0)
+  penaltiesScored      Int?    @default(0)
+  penaltiesMissed      Int?    @default(0)
+  teamId               Int?
+  seasonId             String?
+  draws                Int?    @default(0)
+  losses               Int?    @default(0)
+  points               Int?    @default(0)
+  wins                 Int?    @default(0)
+  season               season? @relation(fields: [seasonId], references: [id], map: "SeasonTeamStats_seasonId_fkey")
+  team                 team?   @relation(fields: [teamId], references: [id], map: "SeasonTeamStats_teamId_fkey")
 
-  player   Player?    @relation(fields: [playerId], references: [id])
-  playerId Int ?   
+  @@index([seasonId], map: "SeasonTeamStats_seasonId_fkey")
+  @@index([teamId], map: "SeasonTeamStats_teamId_fkey")
 }
 
-model LeaguePlayerStats {
-  id          Int      @id @default(autoincrement())
-  goalsScored           Int? @default(0)
-  shotsOnTarget         Int? @default(0) 
-  shotsOffTarget        Int? @default(0)
-  shotsTaken            Int? @default(0)
-  passesCompleted       Int? @default(0)
-  passesIncomplete      Int? @default(0)
-  cornersTaken          Int? @default(0)
-  freeKicks             Int? @default(0)
-  redCards              Int? @default(0) 
-  yellowCrads           Int? @default(0)
-  offSides              Int? @default(0)
-  fouls                 Int? @default(0)
-  penalties             Int? @default(0)
-  penaltiesScored       Int? @default(0)
-  penaltiesMissed       Int? @default(0)
-  
-  //foreign keys 
-  player   Player?    @relation(fields: [playerId], references: [id])
-  playerId Int ?   
+model team {
+  id              Int               @id @default(autoincrement())
+  name            String?           @db.VarChar(255)
+  nickname        String?           @db.VarChar(255)
+  headCoach       String?           @db.VarChar(255)
+  stadiumName     String?           @db.VarChar(255)
+  city            String?           @db.VarChar(255)
+  logoImg         Bytes?
+  gameteamstats   gameteamstats[]
+  leagueteamstats leagueteamstats[]
+  player          player[]
+  seasonteamstats seasonteamstats[]
 }
-
-generator client {
-  provider = "prisma-client-js"
-}
-
-
-
-   
-
-   

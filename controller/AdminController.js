@@ -1,14 +1,7 @@
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient({
-    datasources: {
-      db: {
-        provider: process.env.DB_Provider,
-        url: process.env.DATABASE_URL,
-      }
-    },
-  });
+const prisma = new PrismaClient();
 
 const AddEmployee = async(fullName, email,password, active) =>{
 
@@ -20,7 +13,6 @@ const AddEmployee = async(fullName, email,password, active) =>{
             active: active, 
         }
     });
-
 }
 
 const AddTeam = async(name, nickname,headCoach, stadiumName, city, logoImg)=>{
@@ -35,7 +27,6 @@ const AddTeam = async(name, nickname,headCoach, stadiumName, city, logoImg)=>{
                 logoImg: logoImg
              }
     });
-
 }
 
 const AddGame = async(gameDate, gameTime, location, active, empId, seasonId)=>{
@@ -62,7 +53,6 @@ var emp= await prisma.employee.findUnique({
             season: { connect: { id: season.id }}      
              }
     });
-
 }
 
 

@@ -17,7 +17,6 @@ router.post('/AddEmp',async (req,res,)=>{
     })
 })
 
-
 router.post('/AddTeam',async (req,res,)=>{
     Addies.AddTeam(req.body.name, req.body.nickname, req.body.headCoach, req.body.stadiumName, req.body.city, req.body.logoImg).then(()=>{
         res.json({message: "success AddTeam"})
@@ -30,8 +29,6 @@ router.post('/AddTeam',async (req,res,)=>{
     Addies.AddSeasonTeamStats(req.body.teamId, req.body.seasonId).then(()=>{
         res.json({message: "Success AddSeasonTeamStats"})
     })
-
-
 })
 
 router.post('/AddPlayer',async (req,res,)=>{
@@ -146,10 +143,5 @@ router.get('/DisplaySelectedTeamLeagueStats',async (req,res,)=>{
        res.json({message: "Success DisplaySelectedTeamLeagueStats"})
     })
 })
-
-
-
-
-
 
 module.exports=router
