@@ -71,7 +71,7 @@ CREATE TABLE `GameOfficial` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `role` VARCHAR(191) NULL,
     `position` VARCHAR(191) NULL,
-    `officalId` INTEGER NULL,
+    `officialId` INTEGER NULL,
     `gameId` INTEGER NULL,
 
     PRIMARY KEY (`id`)
@@ -244,7 +244,7 @@ ALTER TABLE `Game` ADD CONSTRAINT `Game_empId_fkey` FOREIGN KEY (`empId`) REFERE
 ALTER TABLE `Game` ADD CONSTRAINT `Game_seasonId_fkey` FOREIGN KEY (`seasonId`) REFERENCES `Season`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `GameOfficial` ADD CONSTRAINT `GameOfficial_officalId_fkey` FOREIGN KEY (`officalId`) REFERENCES `Offical`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `GameOfficial` ADD CONSTRAINT `GameOfficial_officialId_fkey` FOREIGN KEY (`officialId`) REFERENCES `Offical`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `GameOfficial` ADD CONSTRAINT `GameOfficial_gameId_fkey` FOREIGN KEY (`gameId`) REFERENCES `Game`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

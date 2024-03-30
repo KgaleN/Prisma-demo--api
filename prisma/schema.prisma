@@ -48,13 +48,13 @@ model gameofficial {
   id        Int      @id @default(autoincrement())
   role      String?
   position  String?
-  officalId Int?
+  officialId Int?
   gameId    Int?
   game      game?    @relation(fields: [gameId], references: [id], map: "GameOfficial_gameId_fkey")
-  offical   offical? @relation(fields: [officalId], references: [id], map: "GameOfficial_officalId_fkey")
+  offical   offical? @relation(fields: [officialId], references: [id], map: "GameOfficial_officialId_fkey")
 
   @@index([gameId], map: "GameOfficial_gameId_fkey")
-  @@index([officalId], map: "GameOfficial_officalId_fkey")
+  @@index([officialId], map: "GameOfficial_officialId_fkey")
 }
 
 model gameplayerstats {

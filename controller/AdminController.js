@@ -3,15 +3,17 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddEmployee = async(fullName, email,password, active) =>{
+const AddEmployee = async(req, res) =>{
 
      await prisma.employee.create({
         data:{
-            fullName: fullName,
-            email: email,
-            password: password,
-            active: active, 
+            fullName: req.body.fullName,
+            email: req.body.email,
+            password:req.body. password,
+            active: req.body.active, 
         }
+    }).then(()=>{
+        res.json({message: "success employee"})
     });
 }
 
@@ -29,6 +31,7 @@ const AddTeam = async(name, nickname,headCoach, stadiumName, city, logoImg)=>{
     });
 }
 
+//Are you adding a game or finding one
 const AddGame = async(gameDate, gameTime, location, active, empId, seasonId)=>{
 
 var season= await prisma.season.findUnique({
@@ -192,14 +195,14 @@ const AddLeaguePlayerStats = async(player)=>{
     });
 }
 
-const AssignGameToOffical = async(gameId, officalId, role, position)=>{ 
+const AssignGameToOffical = async(gameId, officialId, role, position)=>{ 
 
      await prisma.gameOfficial.create({
              data:{
                 role: role,
                 position: position,
                 gameId: gameId,
-                empId: OfficalId
+                empId: officialId
              }
     });
 }
@@ -221,7 +224,7 @@ const DisplayListOfFixtures = async()=>{
     const listOfAllFixtures = await prisma.game.findMany({
         where: {
             gameDate: {
-              gte:new Date()
+              get:new Date()
             }
           },
         include: {
@@ -268,14 +271,15 @@ return await prisma.team.findMany({
 
 }
 
-const DisplayListOfEmployees = async()=>{ 
+const DisplayListOfEmployees = async(req, res)=>{ 
 
     return await prisma.employee.findMany({
         include: {
             games: true,
           }
-       });
-
+       }).then((listOfAllEmployees)=>{
+        res.json({listOfAllEmployees: listOfAllEmployees})
+     });
     
 }
 

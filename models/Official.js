@@ -4,7 +4,7 @@ const Config = require('../config/config');
  
 module.exports =  sequelize.define('Offical', {
 
-    OfficalId: {
+    officialId: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
