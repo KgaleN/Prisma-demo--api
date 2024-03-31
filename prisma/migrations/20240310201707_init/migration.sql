@@ -49,7 +49,7 @@ CREATE TABLE `Team` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Offical` (
+CREATE TABLE `Official` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `fullName` VARCHAR(255) NULL,
     `active` VARCHAR(3) NULL,
@@ -244,7 +244,7 @@ ALTER TABLE `Game` ADD CONSTRAINT `Game_empId_fkey` FOREIGN KEY (`empId`) REFERE
 ALTER TABLE `Game` ADD CONSTRAINT `Game_seasonId_fkey` FOREIGN KEY (`seasonId`) REFERENCES `Season`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `GameOfficial` ADD CONSTRAINT `GameOfficial_officialId_fkey` FOREIGN KEY (`officialId`) REFERENCES `Offical`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `GameOfficial` ADD CONSTRAINT `GameOfficial_officialId_fkey` FOREIGN KEY (`officialId`) REFERENCES `Official`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `GameOfficial` ADD CONSTRAINT `GameOfficial_gameId_fkey` FOREIGN KEY (`gameId`) REFERENCES `Game`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

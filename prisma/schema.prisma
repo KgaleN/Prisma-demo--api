@@ -51,7 +51,7 @@ model gameofficial {
   officialId Int?
   gameId    Int?
   game      game?    @relation(fields: [gameId], references: [id], map: "GameOfficial_gameId_fkey")
-  offical   offical? @relation(fields: [officialId], references: [id], map: "GameOfficial_officialId_fkey")
+  official   official? @relation(fields: [officialId], references: [id], map: "GameOfficial_officialId_fkey")
 
   @@index([gameId], map: "GameOfficial_gameId_fkey")
   @@index([officialId], map: "GameOfficial_officialId_fkey")
@@ -160,7 +160,7 @@ model leagueteamstats {
   @@index([teamId], map: "LeagueTeamStats_teamId_fkey")
 }
 
-model offical {
+model official {
   id           Int            @id @default(autoincrement())
   fullName     String?        @db.VarChar(255)
   active       String?        @db.VarChar(3)

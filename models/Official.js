@@ -2,7 +2,7 @@ const {DataTypes,Sequelize} = require('sequelize');
 const Config = require('../config/config');
  const sequelize =new Sequelize(Config.development);
  
-module.exports =  sequelize.define('Offical', {
+module.exports =  sequelize.define('Official', {
 
     officialId: {
       autoIncrement: true,
