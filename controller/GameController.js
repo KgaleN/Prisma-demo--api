@@ -3,33 +3,33 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddGame = async(gameDate, gameTime, location, active, empId, seasonId)=>{
+//
+const AddGame = async(gameDate, gameTime, location, active, empId, seasonId) => {
+    var season = await prisma.season.findUnique({
+        where:{
+            id: seasonId,
+        },
+    })
 
-var season= await prisma.season.findUnique({
-    where:{
-        id: seasonId,
-    },
-})
+    var emp = await prisma.employee.findUnique({
+                where:{
+                    id: empId,
+                },
+            })
 
-var emp= await prisma.employee.findUnique({
-             where:{
-                 id: empId,
-             },
-         })
-
-     await prisma.team.create({
-        data:{
-            gameDate: gameDate ,  
-            gameTime: gameTime,  
-            location: location,
-            active: active, 
-            emp: { connect: { id: emp.id }},
-            season: { connect: { id: season.id }}      
-             }
+        await prisma.team.create({
+            data:{
+                gameDate: gameDate ,  
+                gameTime: gameTime,  
+                location: location,
+                active: active, 
+                emp: { connect: { id: emp.id }},
+                season: { connect: { id: season.id }}      
+            }
     });
 }
 
-// const AddGame = async(seasonId)=>{
+// const AddGame = async(seasonId) => {
 //     const currentDate = new Date();
 
 // // Set the time for the date object
@@ -65,32 +65,54 @@ var emp= await prisma.employee.findUnique({
     
 //     }
 
-const AssignGameToEmployee = async(gameId, empId)=>{ 
-
+const AssignGameToEmployee = async(req, res) => { 
     await prisma.game.update({
        where:{
-           id:gameId
+           id: req.body.gameId
        },
             data:{
-               empId: empId
+               empId: req.body.empId
             }
-   });
+   })
+   .then(() => {
+    res.json({message: "Success AssignGame"})
+ });
 }
 
-const AssignGameToOfficial = async(gameId, officialId, role, position)=>{ 
-
+const AssignGameToOfficial = async(req, res) => { 
     await prisma.gameOfficial.create({
             data:{
-               role: role,
-               position: position,
-               gameId: gameId,
-               empId: officialId
+               role: req.body.role,
+               position: req.body.position,
+               gameId: req.body.gameId,
+               empId: req.body.officialId
             }
-   });
+   })
+   .then(() => {
+    res.json({message: "Success AssignOfficial"})
+ });
 }
 
-const DisplayListOfFixtures = async()=>{ 
+const DisplayListOfResults = async(req, res) => { 
+    return await prisma.game.findMany({
+        where: {
+            gameDate: {
+              lte: new Date()
+            }
+          },
 
+        include: {
+            gameTeamStats: true,
+            gamePlayerStats: true
+          }
+    })
+    .then((listOfAllResults) => {
+        res.json({listOfAllResults: listOfAllResults})
+     });
+}
+
+// I'm not sure what this is attached to.
+const DisplayListOfFixtures = async(req, res) => { 
     const listOfAllFixtures = await prisma.game.findMany({
         where: {
             gameDate: {
@@ -106,36 +128,23 @@ const DisplayListOfFixtures = async()=>{
     return listOfAllFixtures;
 }
 
-const DisplayListOfResults = async()=>{ 
-    return await prisma.game.findMany({
-        where: {
-            gameDate: {
-              lte: new Date()
-            }
-          },
-
-        include: {
-            gameTeamStats: true,
-            gamePlayerStats: true
-          }
-    });
-}
-
-const DisplaySelectedResults = async(gameId)=>{ 
-
+const DisplaySelectedResults = async(gameId) => { 
     return await prisma.game.find({
         where:{
-            id: gameId, 
+            id: req.body.gameId, 
         },
         include: {
-            gameOfficials:true, 
-            gameTeamStats:true,
+            gameOfficials: true, 
+            gameTeamStats: true,
             gamePlayerStats: true 
           }
-    });   
+    })
+    .then((selectedResults) => {
+        res.json({selectedResults: selectedResults})
+     });   
 }
 
-// const DisplaySelectedFixture = async(gameId)=>{ 
+// const DisplaySelectedFixture = async(gameId) => { 
 //     return await prisma.game.findMany({
 //         where:{
 //             id: gameId, 
@@ -144,8 +153,8 @@ const DisplaySelectedResults = async(gameId)=>{
 //               }
 //         },
 //         include: {
-//             gameOfficials:true, 
-//             gameTeamStats:true,
+//             gameOfficials: true, 
+//             gameTeamStats: true,
 //             gamePlayerStats: true 
 //           }
 //     });   

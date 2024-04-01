@@ -1,45 +1,34 @@
 const express = require('express');
-const bcrpt = require('bcrypt');
 const router = express.Router();
 const GameController = require('../controller/GameController');
 const GameTeamController = require('../controller/GameTeamController');
 
-router.post('/AddGame', async (req,res,)=>{
-   GameController.AddGame(req.body.gameDate, req.body.gameTime, req.body.location, req.body.active, req.body.empId, req.body.empId.seasonId).then(()=>{
+// We should figure out how to do these requests in the controller
+// I know this works, but it's good practice to keep stuff in one class
+// The controller should handle the whole request and response, while the route will only handle routing.
+router.post('/create', async (req,res,) => {
+   GameController.AddGame(req.body.gameDate, req.body.gameTime, req.body.location, req.body.active, req.body.empId, req.body.empId.seasonId).then(() => {
       res.json({message: "Success AddGame"})
    })
 
-   GameTeamController.AddGameTeamStats(req.body.homeTeam, req.body.game).then(()=>{
+   // Is there a reason this is here twice?
+   GameTeamController.AddGameTeamStats(req.body.homeTeam, req.body.game).then(() => {
       res.json({message: "Success AddGameTeamStats"})
    })
 
-   GameTeamController.AddGameTeamStats(req.body.awayTeam, req.body.game).then(()=>{
+   GameTeamController.AddGameTeamStats(req.body.awayTeam, req.body.game).then(() => {
       res.json({message: "Success AddGameTeamStats"})
    })
 })
 
-router.post('/AssignGame', async (req,res,)=>{
-   GameController.AssignGameToEmployee(req.body.gameId, req.body.empId).then(()=>{
-      res.json({message: "Success AssignGame"})
-   })
-})
+router.post('/assign-Game', GameController.AssignGameToEmployee)
 
-router.post('/AssignOfficial', async (req,res,)=>{
-   GameController.AssignGameToOfficial(req.body.gameId, req.body.officialId, req.body.role, req.body.position).then(()=>{
-      res.json({message: "Success AssignOfficial"})
-   })
-})
+router.post('/assign-official', GameController.AssignGameToOfficial)
 
-router.get('/DisplayAllResults', async (req,res,)=>{
-   GameController.DisplayListOfResults().then((listOfAllResults)=>{
-      res.json({listOfAllResults: listOfAllResults})
-   })
-})
+// We should think of a better name for these, especially the methods. I am assuming this means the results off all games but im not 100% sure.
+// Routes also are generally only use lower case letters and use snake case. E.g. display-all-results
+router.get('/DisplayAllResults', GameController.DisplayListOfResults)
 
-router.get('/DisplaySelectedResults',async (req,res,)=>{
-   GameController.DisplaySelectedResults(req.body.gameId).then((selectedResults)=>{
-      res.json({selectedResults: selectedResults})
-   })
-})
+router.get('/display-selected-results', GameController.DisplaySelectedResults)
 
 module.exports = router

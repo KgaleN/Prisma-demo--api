@@ -3,8 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddTeam = async(name, nickname,headCoach, stadiumName, city, logoImg)=>{
-
+const AddTeam = async(name, nickname,headCoach, stadiumName, city, logoImg) => {
      await prisma.team.create({
         data:{
                 name: name,
@@ -17,43 +16,47 @@ const AddTeam = async(name, nickname,headCoach, stadiumName, city, logoImg)=>{
     });
 }
 
-const DisplayListOfTeams = async()=>{ 
-
-return await prisma.team.findMany({
-    include: {
-        players: true, 
-        seasonTeamStats: true,
-        gameTeamStats: true,
-        leagueTeamdStats: true
-    },
-    orderBy: {
-        seasonTeamStats: {
-            points: 'desc' // descending order based on points
+const DisplayListOfTeams = async(req, res) => { 
+    return await prisma.team.findMany({
+        include: {
+            players: true, 
+            seasonTeamStats: true,
+            gameTeamStats: true,
+            leagueTeamdStats: true
+        },
+        orderBy: {
+            seasonTeamStats: {
+                points: 'desc' // descending order based on points
+            }
         }
-    }
-});
-
+    })
+    .then((listOfAllTeams) => {
+        res.json({listOfAllTeams: listOfAllTeams})
+    });
 }
 
-const DisplayTeamResults = async(teamId)=>{ 
+const DisplayTeamResults = async(req, res) => { 
     return await prisma.team.find({
         where:{
-            id: teamId, 
+            id: req.body.teamId, 
             gameDate: {
                 gt: currentDate
-              }
+            }
         },
         include: {
-            players:true, 
+            players: true, 
             seasonTeamStats: true,
             gameTeamStats: true,
             leagueTeamdStats: true
           }
+    })
+    .then((listOfAllTeamResults) => {
+        res.json({listOfAllTeamResults: listOfAllTeamResults})
     });   
 }
 
 //idk about this
-const DisplayTeamFixtures = async(teamId)=>{ 
+const DisplayTeamFixtures = async(teamId) => { 
 
     return await prisma.team.find({
         where:{
@@ -63,7 +66,7 @@ const DisplayTeamFixtures = async(teamId)=>{
               }
         },
         include: {
-            players:true, 
+            players: true, 
             seasonTeamStats: true,
             gameTeamStats: true,
             leagueTeamdStats: true

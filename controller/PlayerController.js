@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddPlayer = async(fullName, age, height, weight, nationality, status, position, team)=>{
+const AddPlayer = async(fullName, age, height, weight, nationality, status, position, team) => {
      await prisma.player.create({
         data:{
             fullName: fullName,
@@ -18,17 +18,21 @@ const AddPlayer = async(fullName, age, height, weight, nationality, status, posi
     });
 }
 
-const DisplayTeamPlayers = async(teamId)=>{ 
-    const listOfPlayers =await prisma.players.findMany({
+const DisplayTeamPlayers = async(req, res) => { 
+    const listOfPlayers = await prisma.player.findMany({
         where:{
-            teamId: teamId
+            teamId: req.body.teamId
         },
         include: {
             gamePlayerStats: true, 
             seasonPlayerStats: true,
             leaguePlayerStats: true
           }
-    });   
+    })
+    .then((listOfAllTeamPlayers) => {
+        res.json({listOfAllTeamPlayers: listOfAllTeamPlayers})
+    });  
+
     return listOfPlayers;
 }
 

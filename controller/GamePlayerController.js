@@ -3,8 +3,8 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddGamePlayerStats = async(game, player)=>{ 
-
+// Not sure what this attached to yet
+const AddGamePlayerStats = async(game, player) => { 
      await prisma.gamePlayerStats.create({
         data:{
               game: game, 

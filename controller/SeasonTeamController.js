@@ -3,7 +3,7 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddSeasonTeamStats = async(season, team)=>{ 
+const AddSeasonTeamStats = async(season, team) => { 
      await prisma.seasonTeamStats.create({
         data:{
               season: season, 

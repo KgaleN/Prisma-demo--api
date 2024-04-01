@@ -1,10 +1,9 @@
-require('dotenv').config();
+require('dotenv').config();AddGameTeamStats
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const AddGameTeamStats = async(gameId, teamId)=>{
-
+const AddGameTeamStats = async(gameId, teamId) => {
     var game= await prisma.game.findUnique({
                  where:{
                      id: gameId,
@@ -21,7 +20,7 @@ const AddGameTeamStats = async(gameId, teamId)=>{
         data:{
               game: { connect: { id: game.id }}, 
               team: { connect: { id: team.id }}  
-             }
+        }
     });
 }
 

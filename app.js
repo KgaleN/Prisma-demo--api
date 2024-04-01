@@ -35,6 +35,7 @@ app.use('/api/official',     officialRouter);
 app.use('/api/leagueTeam',   leagueTeamRouter);
 
 const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
     console.log('The Server is running on port 3001');
 });
