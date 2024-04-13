@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const PlayerController = require('../controller/PlayerController');
+const helmet = require('helmet');
+const morgan = require('morgan');
+
+router.use(helmet());
+router.use(morgan('dev'));
 
 // Also need to figure out how to do this in the controller
 router.post('/create',async (req,res,) => {

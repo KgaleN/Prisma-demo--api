@@ -4,6 +4,11 @@ const TeamController = require('../controller/TeamController');
 const GameController = require('../controller/GameController');
 const LeagueTeamController = require('../controller/LeagueTeamController');
 const SeasonTeamController = require('../controller/SeasonTeamController');
+const helmet = require('helmet');
+const morgan = require('morgan');
+
+router.use(helmet());
+router.use(morgan('dev'));
 
 // Also need to figure out how to do this in the controller
 router.post('/create', async (req, res,) => {
@@ -22,17 +27,17 @@ router.post('/create', async (req, res,) => {
 
 router.get('/index', TeamController.DisplayListOfTeams)
 
-router.get('/display-all-team-results', GameController.DisplaySelectedFixture)
+//router.get('/display-all-team-results', GameController.DisplaySelectedFixture)
 
 //idk about this
-router.get('/display-all-team-fixtures',async (req,res,) => {
+router.get('/display-all-team-fixtures', async (req,res,) => {
     TeamController.DisplayTeamFixtures(req.body.teamId).then((listOfAllTeamFixtures) => { 
        res.json({listOfAllTeamFixtures: listOfAllTeamFixtures})
     })
 })
 
 // Why is this filtering by gameid? 
-router.get('/display-selected-team-fixture',async (req,res,) => {
+router.get('/display-selected-team-fixture', async (req,res,) => {
     TeamController.DisplayTeamFixtures(req.body.gameId).then((selectedTeamFixture) => {
        res.json({selectedTeamFixture: selectedTeamFixture})
     })

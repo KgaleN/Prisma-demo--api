@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const GameController = require('../controller/GameController');
 const GameTeamController = require('../controller/GameTeamController');
+const helmet = require('helmet');
+const morgan = require('morgan');
+
+router.use(helmet());
+router.use(morgan('dev'));
 
 // We should figure out how to do these requests in the controller
 // I know this works, but it's good practice to keep stuff in one class

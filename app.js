@@ -5,6 +5,7 @@ const Multer = require('multer');
 var upload = Multer();
 
 //routes
+const authRouter             = require('./routes/AuthRoute');
 const adminRouter            = require('./routes/AdminRoute');
 const employeeRouter         = require('./routes/EmployeeRoute');
 const teamRouter             = require('./routes/TeamRoute');
@@ -26,6 +27,7 @@ app.use((reg,res,next)=>
  next();
 });
 
+app.use('/api/auth',         authRouter);
 app.use('/api/admin',        adminRouter);
 app.use('/api/employee',     employeeRouter);
 app.use('/api/team',         teamRouter);

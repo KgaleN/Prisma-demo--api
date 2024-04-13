@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const AdminController = require('../controller/AdminController');
+const AuthController = require('../controller/AuthController');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
@@ -9,8 +9,10 @@ router.use(morgan('dev'));
 
 // TODO: Add admin routes.
 
-router.post('/create', AdminController.AddAdmin)
+// Change this name to something better
+router.post('/create', AuthController.addAdmin)
 
-router.get('/index', AdminController.DisplayListOfAdmins)
+router.post('/login', AuthController.login)
+
 
 module.exports = router
